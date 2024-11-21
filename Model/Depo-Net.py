@@ -1,7 +1,7 @@
 from .unet_parts import *
 from .repvit import *
 import timm
-from MTMamba.models.utils import *
+from purfMamba.models.util import *
 
 class RepViTBlock(nn.Module):
     def __init__(self,in1, inp, hidden_dim, oup, kernel_size=3, stride=2, use_se=0, use_hs=0):
