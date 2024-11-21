@@ -73,10 +73,9 @@ class DSC(nn.Module):
         z_af = t_weighted + f_weighted
         return z_af
       
-class DWTFFT(nn.Module):
+class HastFormer(nn.Module):
     def __init__(self, channels, num_heads, kernels=[1, 3, 5, 7], reduction=16, group=1, L=32, dynamic_ratio=4):
         super().__init__()
-        self.cwf64 = cwFModule(channels, channels)
         self.num_heads = num_heads
         self.head_dim = channels // num_heads
         self.scale = 1 / (self.head_dim ** 0.5)
@@ -84,6 +83,7 @@ class DWTFFT(nn.Module):
         self.dynamic_weights = nn.Parameter(torch.Tensor(num_heads, self.head_dim // dynamic_ratio, self.head_dim))
         nn.init.xavier_uniform_(self.dynamic_weights)
         self.d = max(L, channels // reduction)
+        self.DSC64 = DSC(channels, channels)
         self.convs = nn.ModuleList([
             nn.Sequential(OrderedDict([
                 ('conv', nn.Conv2d(channels, channels, kernel_size=k, padding=k//2, groups=group)),
